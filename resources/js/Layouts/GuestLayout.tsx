@@ -1,19 +1,30 @@
-import ApplicationLogo from '@/Components/ApplicationLogo'
-import { Link } from '@inertiajs/react'
-import { PropsWithChildren } from 'react'
+import { Toaster } from '@/Components/Ui/sonner'
+import { usePage } from '@inertiajs/react'
+import { PropsWithChildren, useEffect } from 'react'
+import { toast } from 'sonner'
 
 export default function Guest({ children }: PropsWithChildren) {
-  return (
-    <div className='flex min-h-screen flex-col items-center bg-gray-100 pt-6 dark:bg-gray-900 sm:justify-center sm:pt-0'>
-      <div>
-        <Link href='/'>
-          <ApplicationLogo className='h-20 w-20 fill-current text-gray-500' />
-        </Link>
-      </div>
+  const { flash } = usePage().props
 
-      <div className='mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md dark:bg-gray-800 sm:max-w-md sm:rounded-lg'>
-        {children}
-      </div>
+  console.log('flash', flash)
+
+  useEffect(() => {
+    if (!flash) return
+
+    if (flash.success) {
+      toast.success(flash.success)
+    } else if (flash.error) {
+      toast.error(flash.success)
+    } else if (flash.status) {
+      toast.info(flash.status)
+    }
+  }, [flash])
+
+  return (
+    <div className='flex h-svh items-center justify-center bg-[#5c3b58]'>
+      <div className='md:h-auto md:w-[420px]'>{children}</div>
+
+      <Toaster />
     </div>
   )
 }
