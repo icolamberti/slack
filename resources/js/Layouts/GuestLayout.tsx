@@ -6,8 +6,6 @@ import { toast } from 'sonner'
 export default function Guest({ children }: PropsWithChildren) {
   const { flash } = usePage().props
 
-  console.log('flash', flash)
-
   useEffect(() => {
     if (!flash) return
 
