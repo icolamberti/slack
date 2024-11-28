@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/Components/Ui/card'
 import { Separator } from '@/Components/Ui/separator'
 import GuestLayout from '@/Layouts/GuestLayout'
 import { Link, useForm } from '@inertiajs/react'
-import { FormEventHandler } from 'react'
+import { TriangleAlert } from 'lucide-react'
+import { FormEventHandler, useCallback } from 'react'
 import { FaFacebook } from 'react-icons/fa'
 import { FcGoogle } from 'react-icons/fc'
 
@@ -29,12 +30,27 @@ export default function () {
     post('')
   }
 
+  const credentialError = useCallback(() => {
+    if (errors.email === 'These credentials do not match our records.') {
+      return true
+    }
+
+    return false
+  }, [errors.email])
+
   return (
     <GuestLayout>
       <Card className='h-full w-full p-8'>
         <CardHeader className='px-0 pt-0'>
           <CardTitle>Sign in</CardTitle>
         </CardHeader>
+
+        {credentialError() && (
+          <div className='mb-6 flex items-center gap-x-2 rounded-md bg-destructive/15 p-3 text-sm text-destructive'>
+            <TriangleAlert className='size-4' />
+            <p>{errors.email}</p>
+          </div>
+        )}
 
         <CardContent className='flex flex-col gap-5 px-0 pb-0'>
           <form className='flex flex-col gap-2' onSubmit={onSubmit}>
@@ -43,7 +59,7 @@ export default function () {
               label='Email'
               value={data.email}
               onChange={event => setData('email', event.target.value)}
-              errorMessage={errors.email}
+              errorMessage={!credentialError() ? errors.email : ''}
               isFocused
               required
             />
