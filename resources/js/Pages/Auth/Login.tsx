@@ -1,103 +1,143 @@
-import Checkbox from '@/Components/Checkbox'
-import InputError from '@/Components/InputError'
-import InputLabel from '@/Components/InputLabel'
-import PrimaryButton from '@/Components/PrimaryButton'
-import TextInput from '@/Components/TextInput'
+import InputCheckbox from '@/Components/Forms/InputCheckbox'
+import InputPassword from '@/Components/Forms/InputPassword'
+import InputText from '@/Components/Forms/InputText'
+import { Button } from '@/Components/Ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/Ui/card'
+import { Separator } from '@/Components/Ui/separator'
 import GuestLayout from '@/Layouts/GuestLayout'
-import { Head, Link, useForm } from '@inertiajs/react'
+import { Link, useForm } from '@inertiajs/react'
 import { FormEventHandler } from 'react'
+import { FaFacebook } from 'react-icons/fa'
+import { FcGoogle } from 'react-icons/fc'
 
-export default function Login({
-  status,
-  canResetPassword,
-}: {
-  status?: string
-  canResetPassword: boolean
-}) {
-  const { data, setData, post, processing, errors, reset } = useForm({
+type FormType = {
+  email: string
+  password: string
+  remember: boolean
+}
+
+export default function () {
+  const { data, setData, post, errors, processing } = useForm<FormType>({
     email: '',
     password: '',
     remember: false,
   })
 
-  const submit: FormEventHandler = e => {
-    e.preventDefault()
+  const onSubmit: FormEventHandler = event => {
+    event.preventDefault()
 
-    post(route('login'), {
-      onFinish: () => reset('password'),
-    })
+    post('')
   }
 
   return (
     <GuestLayout>
-      <Head title='Log in' />
+      <Card className='h-full w-full p-8'>
+        <CardHeader className='px-0 pt-0'>
+          <CardTitle>Sign in</CardTitle>
+        </CardHeader>
 
-      {status && (
-        <div className='mb-4 text-sm font-medium text-green-600'>{status}</div>
-      )}
-
-      <form onSubmit={submit}>
-        <div>
-          <InputLabel htmlFor='email' value='Email' />
-
-          <TextInput
-            id='email'
-            type='email'
-            name='email'
-            value={data.email}
-            className='mt-1 block w-full'
-            autoComplete='username'
-            isFocused={true}
-            onChange={e => setData('email', e.target.value)}
-          />
-
-          <InputError message={errors.email} className='mt-2' />
-        </div>
-
-        <div className='mt-4'>
-          <InputLabel htmlFor='password' value='Password' />
-
-          <TextInput
-            id='password'
-            type='password'
-            name='password'
-            value={data.password}
-            className='mt-1 block w-full'
-            autoComplete='current-password'
-            onChange={e => setData('password', e.target.value)}
-          />
-
-          <InputError message={errors.password} className='mt-2' />
-        </div>
-
-        <div className='mt-4 block'>
-          <label className='flex items-center'>
-            <Checkbox
-              name='remember'
-              checked={data.remember}
-              onChange={e => setData('remember', e.target.checked)}
+        <CardContent className='flex flex-col gap-5 px-0 pb-0'>
+          <form className='flex flex-col gap-2' onSubmit={onSubmit}>
+            <InputText
+              name='email'
+              label='Email'
+              value={data.email}
+              onChange={event => setData('email', event.target.value)}
+              errorMessage={errors.email}
+              isFocused
+              required
             />
-            <span className='ms-2 text-sm text-gray-600 dark:text-gray-400'>
-              Remember me
-            </span>
-          </label>
-        </div>
 
-        <div className='mt-4 flex items-center justify-end'>
-          {canResetPassword && (
-            <Link
-              href={route('password.request')}
-              className='rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800'
+            <InputPassword
+              name='password'
+              label='Password'
+              value={data.password}
+              onChange={event => setData('password', event.target.value)}
+              errorMessage={errors.password}
+              required
+            />
+
+            <div className='flex items-center justify-between text-xs'>
+              <InputCheckbox
+                name='remember'
+                value='remember'
+                label='Remember me'
+                onChange={() => setData('remember', !data.remember)}
+                checked={data.remember}
+                className='pl-1'
+              />
+
+              <Link href={route('password.request')}>
+                <Button
+                  variant={'link'}
+                  size={'link'}
+                  className='text-xs'
+                  type='button'
+                >
+                  Forgot your password?
+                </Button>
+              </Link>
+            </div>
+
+            <Button
+              type='submit'
+              className='mt-5 w-full'
+              size={'lg'}
+              isLoading={processing}
             >
-              Forgot your password?
-            </Link>
-          )}
+              Login
+            </Button>
+          </form>
 
-          <PrimaryButton className='ms-4' disabled={processing}>
-            Log in
-          </PrimaryButton>
-        </div>
-      </form>
+          <div className='flex items-center gap-3 text-xs text-gray-400'>
+            <Separator className='flex-1' />
+            or login with
+            <Separator className='flex-1' />
+          </div>
+
+          <div className='grid grid-cols-2 gap-2.5'>
+            <a href={route('auth.google')}>
+              <Button
+                onClick={() => {}}
+                variant={'outline'}
+                size={'lg'}
+                className='w-full'
+                type='button'
+              >
+                <FcGoogle />
+                Google
+              </Button>
+            </a>
+
+            <a href={route('auth.facebook')}>
+              <Button
+                onClick={() => {}}
+                variant={'outline'}
+                size={'lg'}
+                className='w-full'
+                type='button'
+              >
+                <FaFacebook className='text-blue-600' />
+                Facebook
+              </Button>
+            </a>
+          </div>
+
+          <p className='mt-3 text-center text-xs text-muted-foreground'>
+            Don't have an account?{' '}
+            <Link href={route('register')}>
+              <Button
+                variant={'link'}
+                size={'link'}
+                className='text-xs'
+                type='button'
+              >
+                Register here
+              </Button>
+            </Link>
+          </p>
+        </CardContent>
+      </Card>
     </GuestLayout>
   )
 }
