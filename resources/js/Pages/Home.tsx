@@ -21,7 +21,6 @@ export default function ({ workspaces }: Props) {
     }
   }, [workspaceId, isOpen, setIsOpen])
 
-  console.log('workspaces', workspaces)
   return (
     <AuthenticatedLayout>
       <CreateWorkspaceModal isOpen={isOpen} setIsOpen={setIsOpen} />

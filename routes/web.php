@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
@@ -34,10 +35,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
   Route::delete('workspaces/{id}', [WorkspaceController::class, 'destroy'])
     ->middleware('workspace-admin')
     ->name('workspaces.destroy');
+  Route::post('workspaces/{id}/new-join-code', [
+    WorkspaceController::class,
+    'newJoinCode',
+  ])
+    ->middleware(['workspace-admin'])
+    ->name('workspaces.new-join-code');
 
   Route::get('workspaces/{workspace}/channels/{channel}', function () {
     return view('channels.show');
   })->name('workspaces.channels.show'); //TODO:
+  Route::post('workspaces/{id}/channels', [ChannelController::class, 'store'])
+    ->middleware('workspace-admin')
+    ->name('workspaces.channels.store');
+
   Route::get('workspaces/{workspace}/members/{member}', function () {
     return view('channels.show');
   })->name('workspaces.members.show'); //TODO:
