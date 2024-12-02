@@ -16,10 +16,14 @@ export default function () {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className='relative outline-none'>
-        <Avatar className='size-10 transition hover:opacity-75'>
-          <AvatarImage src={user.avatar} alt={user.name} />
+        <Avatar className='size-10 rounded-md transition hover:opacity-75'>
+          <AvatarImage
+            src={user.avatar}
+            alt={user.name}
+            className='rounded-md'
+          />
 
-          <AvatarFallback className='bg-sky-500 text-white'>
+          <AvatarFallback className='rounded-md bg-sky-500 text-xs text-white'>
             {avatarFallback}
           </AvatarFallback>
         </Avatar>

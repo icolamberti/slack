@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
 
 // TODO:
@@ -18,7 +20,25 @@ use Illuminate\Support\Facades\Route;
 require __DIR__ . '/auth.php';
 
 Route::middleware(['auth', 'verified'])->group(function () {
-  Route::get('/', function () {
-    return inertia('Home');
-  })->name('home');
+  Route::get('/', [HomeController::class, 'index'])->name('home');
+
+  Route::post('workspaces', [WorkspaceController::class, 'store'])->name(
+    'workspaces.store'
+  );
+  Route::get('workspaces/{id}', [WorkspaceController::class, 'show'])
+    ->middleware('workspace-authorization')
+    ->name('workspaces.show');
+  Route::patch('workspaces/{id}', [WorkspaceController::class, 'update'])
+    ->middleware('workspace-admin')
+    ->name('workspaces.update');
+  Route::delete('workspaces/{id}', [WorkspaceController::class, 'destroy'])
+    ->middleware('workspace-admin')
+    ->name('workspaces.destroy');
+
+  Route::get('workspaces/{workspace}/channels/{channel}', function () {
+    return view('channels.show');
+  })->name('workspaces.channels.show'); //TODO:
+  Route::get('workspaces/{workspace}/members/{member}', function () {
+    return view('channels.show');
+  })->name('workspaces.members.show'); //TODO:
 });
