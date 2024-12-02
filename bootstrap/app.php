@@ -18,7 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
       ]
     );
 
-    //
+    $middleware->alias([
+      'workspace-authorization' =>
+        \App\Http\Middleware\WorkspaceAuthorization::class,
+      'workspace-admin' => \App\Http\Middleware\WorkspaceAdmin::class,
+    ]);
   })
   ->withExceptions(function (Exceptions $exceptions) {
     //
