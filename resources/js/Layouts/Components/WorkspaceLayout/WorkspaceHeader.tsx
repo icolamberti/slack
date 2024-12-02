@@ -11,15 +11,15 @@ import { WorkspaceShowContext } from '@/Pages/Workspaces/Show'
 import { usePage } from '@inertiajs/react'
 import { ChevronDown, ListFilter, SquarePen } from 'lucide-react'
 import { useContext, useState } from 'react'
+import InviteModal from './InviteModal'
 import PreferencesModal from './PreferencesModal'
 
 export default function () {
   const { user } = usePage().props.auth
   const { workspace } = useContext(WorkspaceShowContext)
 
-  console.log(user.id, workspace.members[0].user_id)
-
   const [isPreferencesOpen, setIsPreferencesOpen] = useState(false)
+  const [isInviteOpen, setIsInviteOpen] = useState(false)
 
   const isAdmin =
     workspace.members.find(member => member.user_id === user.id)?.role ===
@@ -61,7 +61,9 @@ export default function () {
 
                 <DropdownMenuItem
                   className='cursor-pointer py-2'
-                  onClick={() => {}}
+                  onClick={() => {
+                    setIsInviteOpen(true)
+                  }}
                 >
                   Invite people to {workspace.name}
                 </DropdownMenuItem>
@@ -99,6 +101,8 @@ export default function () {
         setIsOpen={setIsPreferencesOpen}
         initialvalue={workspace.name}
       />
+
+      <InviteModal isOpen={isInviteOpen} setIsOpen={setIsInviteOpen} />
     </>
   )
 }

@@ -13,16 +13,16 @@ type FormType = {
 }
 
 export default function ({ isOpen, setIsOpen }: Props) {
-  const { data, setData, errors, processing, post } = useForm<FormType>({
+  const { data, setData, errors, processing, post, reset } = useForm<FormType>({
     name: '',
   })
 
   const handleClose = () => {
     setIsOpen(false)
+    reset()
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log('submit')
     e.preventDefault()
 
     post(route('workspaces.store'), {
@@ -31,6 +31,8 @@ export default function ({ isOpen, setIsOpen }: Props) {
       },
     })
   }
+
+  // TODO: Implement input errors
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

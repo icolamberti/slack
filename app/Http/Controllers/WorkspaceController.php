@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Workspace;
 use Auth;
 use Illuminate\Http\Request;
+use Str;
 
 class WorkspaceController extends Controller
 {
@@ -29,7 +30,7 @@ class WorkspaceController extends Controller
     $workspace = Workspace::create([
       'user_id' => $user->id,
       'name' => $request->name,
-      'join_code' => '123456', //TODO: Create a proper method later
+      'join_code' => Str::random(6),
     ]);
 
     $user->members()->create([
@@ -100,5 +101,16 @@ class WorkspaceController extends Controller
     } else {
       return to_route('home');
     }
+  }
+
+  public function newJoinCode(string $id)
+  {
+    $workspace = Workspace::findOrFail($id);
+
+    $workspace->update([
+      'join_code' => Str::random(6),
+    ]);
+
+    session()->flash('success', 'Invite code regenerated');
   }
 }
